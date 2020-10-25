@@ -165,34 +165,10 @@ if(htim->Instance == TIM4)
 					
 					if(f_state==5)
 						{
-							fine_flag = 0;
-							f_state = 0;
-							i = 0; //
-							coarse_flag = 1;
-							//fine_pkt_prescaler = 0;
 							ptp_to_flag = 1;
 						}
 				}
 				
-			#ifdef ptp_tout_ver2 
-					if(ptp_to_flag)
-						{
-							ptp_timeout++;
-							if(ptp_timeout==4)
-								{
-									if(fine_flag) 	coarse_flag = 0;
-									else 						coarse_flag = 1;
-									//coarse_flag = 1;
-									ptp_timeout = 0;
-									ptp_to_flag = 0;
-									c_state = 0;
-									//fine_flag = 0;
-									f_state = 0;
-									i = synq_interval - 1; //i=0 bood
-									fine_pkt_prescaler = 0;
-								}	
-						}
-			#endif
 				
 			#ifdef PTP_timeout
 			ptp_timeout++;
@@ -212,6 +188,27 @@ if(htim->Instance == TIM4)
 			 	
 			
 			}
+			
+			#ifdef ptp_tout_ver2 
+					if(ptp_to_flag)
+						{
+							ptp_timeout++;
+							if(ptp_timeout==4)
+								{
+									if(fine_flag) 	coarse_flag = 0;
+									else 						coarse_flag = 1;
+									//coarse_flag = 1;
+									ptp_timeout = 0;
+									ptp_to_flag = 0;
+									c_state = 0;
+									//fine_flag = 0;
+									if(f_state==5)	f_state = 4;
+									else  f_state = 0;
+									i = synq_interval - 1; //i=0 bood
+									fine_pkt_prescaler = 0;
+								}	
+						}
+			#endif
 	
 	}
 
