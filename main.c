@@ -167,7 +167,7 @@ if(htim->Instance == TIM4)
 						{
 							fine_flag = 0;
 							f_state = 0;
-							i = 0;
+							i = 0; //
 							coarse_flag = 1;
 							//fine_pkt_prescaler = 0;
 							ptp_to_flag = 1;
