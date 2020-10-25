@@ -58,7 +58,7 @@
 #define LWIP_PTP
 #define ptp_port		1234
 
-#define synq_interval  845
+#define synq_interval  125
 #define f_f_packet_prescaler  50
 #define addend0   3314017975
 #define tim4_period_reg		107   // (863+1) * 9.26us = 8ms-- 107->1ms
@@ -202,8 +202,9 @@ if(htim->Instance == TIM4)
 									ptp_to_flag = 0;
 									c_state = 0;
 									//fine_flag = 0;
-									if(f_state==5)	f_state = 4;
-									else  f_state = 0;
+									//if(f_state==5)	f_state = 4;
+									//else  f_state = 0;
+									f_state = 0;
 									i = synq_interval - 1; //i=0 bood
 									fine_pkt_prescaler = 0;
 								}	
