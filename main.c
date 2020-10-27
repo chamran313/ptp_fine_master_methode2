@@ -62,6 +62,7 @@
 #define f_f_packet_prescaler  50
 #define addend0   3314017975
 #define tim4_period_reg		107   // (863+1) * 9.26us = 8ms-- 107->1ms
+#define synq_pkt_number		5
 //#define PTP_timeout
 #define ptp_tout_ver2
 /* USER CODE END Includes */
@@ -158,12 +159,12 @@ if(htim->Instance == TIM4)
 					 udp_send1(&tx_ts_array[f_state], ptphdr, ptp_synq_interval);
 					 f_state++;
 					 tx_ts_array[f_state] = tx_ts;
-					 if(f_state!=2)		fine_pkt_prescaler =  f_f_packet_prescaler;
+					 if(f_state!= (synq_pkt_number-1) )		fine_pkt_prescaler =  f_f_packet_prescaler;
 					 else		fine_pkt_prescaler = 1; 
 					}
 					fine_pkt_prescaler--;
 					
-					if(f_state==3)
+					if(f_state==synq_pkt_number)
 						{
 							ptp_to_flag = 1;
 						}
@@ -263,7 +264,7 @@ int main(void)
 	coarse_flag = 1;
 	tim4_period = (tim4_period_reg+1) * 0.00926;
 	//ptp_synq_interval = (synq_interval + 2 + 1 + (3*f_f_packet_prescaler) + 1+ 2)* tim4_period; // 2 akhar baraye pkt loss
-	ptp_synq_interval = (2+f_f_packet_prescaler+2) * tim4_period; //2 for pkt loss
+	ptp_synq_interval = (2+(synq_pkt_number-2)*f_f_packet_prescaler+4) * tim4_period; //4 for pkt loss
 	
 	//ptp_synq_interval = (synq_interval + 2 + 1 + (3*f_f_packet_prescaler) + 1+ 1) * 8; // 1 akhar baraye pkt loss
 	
