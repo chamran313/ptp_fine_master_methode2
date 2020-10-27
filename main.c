@@ -195,8 +195,12 @@ if(htim->Instance == TIM4)
 							ptp_timeout++;
 							if(ptp_timeout==4)
 								{
-									if(fine_flag) 	coarse_flag = 0;
-									else 						coarse_flag = 1;
+									if(fine_flag) 	
+										{
+										  coarse_flag = 0;
+											f_state--;
+										}
+									else 		coarse_flag = 1;
 									//coarse_flag = 1;
 									ptp_timeout = 0;
 									ptp_to_flag = 0;
@@ -204,7 +208,6 @@ if(htim->Instance == TIM4)
 									//fine_flag = 0;
 									//if(f_state==5)	f_state = 4;
 									//else  f_state = 0;
-									f_state = 0;
 									i = synq_interval - 1; //i=0 bood
 									fine_pkt_prescaler = 0;
 								}	
@@ -573,6 +576,7 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const
 				 coarse_flag = 0;
 				 fine_flag = 1;
 				 fine_pkt_prescaler = 0;
+				 f_state = 0;
 				 #ifdef ptp_tout_ver2	
 						ptp_to_flag = 0;
 					  ptp_timeout = 0;
@@ -590,6 +594,7 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const
 				i = synq_interval -1 ;
 				fine_pkt_prescaler = 0;
 				
+				ptp_to_flag = 0;
 				ptp_timeout = 0;
 			}
 			
@@ -600,7 +605,8 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const
 				fine_flag = 0;
 				f_state = 0;
 				i = synq_interval - 1;
-			
+				
+			  ptp_to_flag = 0;
 				ptp_timeout = 0;
 			}
 			
