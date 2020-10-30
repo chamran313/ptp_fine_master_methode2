@@ -58,8 +58,8 @@
 #define LWIP_PTP
 #define ptp_port		1234
 
-#define synq_interval  500
-#define f_f_packet_prescaler  50
+#define synq_interval  1000
+#define f_f_packet_prescaler  100
 #define addend0   3314017975
 #define tim4_period_reg		107   // (863+1) * 9.26us = 8ms-- 107->1ms
 #define synq_pkt_number		5
@@ -264,7 +264,7 @@ int main(void)
 	coarse_flag = 1;
 	tim4_period = (tim4_period_reg+1) * 0.00926;
 	//ptp_synq_interval = (synq_interval + 2 + 1 + (3*f_f_packet_prescaler) + 1+ 2)* tim4_period; // 2 akhar baraye pkt loss
-	ptp_synq_interval = (2+(synq_pkt_number-2)*f_f_packet_prescaler+4) * tim4_period; //4 for pkt loss
+	ptp_synq_interval = (3+(synq_pkt_number-2)*f_f_packet_prescaler) * tim4_period; //4 for pkt loss
 	
 	//ptp_synq_interval = (synq_interval + 2 + 1 + (3*f_f_packet_prescaler) + 1+ 1) * 8; // 1 akhar baraye pkt loss
 	
@@ -582,7 +582,7 @@ void udp_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const
 						ptp_to_flag = 0;
 					  ptp_timeout = 0;
 				 #endif
-				 //i = 107;
+				 i = synq_interval - 1;
 				}
 				
 		else if(rcv_buf[0] & 0x80)   // unmatch hdr bw master & slave (coarse ok) recieved
