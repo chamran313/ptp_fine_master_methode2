@@ -98,6 +98,7 @@ uint8_t tim4_period;
 extern ETH_TimeStamp tx_ts;
 extern ETH_TimeStamp rx_ts;
 ETH_TimeStamp tx_ts_array[6];
+ETH_TimeStamp target_time;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -274,7 +275,11 @@ int main(void)
 	ptp_synq_interval = (3+(synq_pkt_number-2)*f_f_packet_prescaler) * tim4_period; //4 for pkt loss
 	
 	//ptp_synq_interval = (synq_interval + 2 + 1 + (3*f_f_packet_prescaler) + 1+ 1) * 8; // 1 akhar baraye pkt loss
+	HAL_TIM_Base_Start_IT(&htim2);
 	
+	target_time.TimeStampHigh = 50;
+	target_time.TimeStampLow = 0;
+	load_target_time(&target_time);
   /* USER CODE END 2 */
 	
 	
