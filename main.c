@@ -58,11 +58,11 @@
 #define LWIP_PTP
 #define ptp_port		1234
 
-#define synq_interval  1000
-#define f_f_packet_prescaler  100
+#define synq_interval  500
+#define f_f_packet_prescaler  150
 #define addend0   3314017975
 #define tim4_period_reg		107   // (863+1) * 9.26us = 8ms-- 107->1ms
-#define synq_pkt_number		5
+#define synq_pkt_number		3
 //#define PTP_timeout
 #define ptp_tout_ver2
 /* USER CODE END Includes */
@@ -216,6 +216,7 @@ if(htim->Instance == TIM4)
 			#endif
 	
 	}
+	
 
 }
 /* USER CODE END 0 */
@@ -359,7 +360,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 0;
+  htim2.Init.Period = 1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -367,7 +368,7 @@ static void MX_TIM2_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_TRIGGER;
+  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_EXTERNAL1;;
   sSlaveConfig.InputTrigger = TIM_TS_ITR1;
   if (HAL_TIM_SlaveConfigSynchronization(&htim2, &sSlaveConfig) != HAL_OK)
   {
@@ -377,6 +378,11 @@ static void MX_TIM2_Init(void)
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+	
+	if (HAL_TIMEx_RemapConfig(&htim2, TIM_TIM2_ETH_PTP) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
