@@ -232,7 +232,26 @@ void ETH_IRQHandler(void)
   /* USER CODE END ETH_IRQn 0 */
   HAL_ETH_IRQHandler(&heth);
   /* USER CODE BEGIN ETH_IRQn 1 */
-
+   if( (ETH->PTPTSSR) & 0x2)
+		{
+			/*HAL_GPIO_WritePin(GPIOG, GPIO_PIN_2, 1);
+			for(ethi=0; ethi<10000; ethi++);
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_2, 0);*/
+			HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_2);
+			
+			ETH->PTPTTLR = ETH->PTPTTLR + 50000000; //100ms
+			//if(ETH->PTPTTLR < 99000000 ) 	ETH->PTPTTHR = ETH->PTPTTHR +1;
+			
+			if(ETH->PTPTTLR > 999999999 )  // agar sarriz nemishe	
+				{
+				ETH->PTPTTHR = ETH->PTPTTHR +1;
+				ETH->PTPTTLR = ETH->PTPTTLR - 1000000000;
+				}
+				
+			ETH->MACIMR &= 0XFFFFFDFF; // unmask timestamp trigger interrupt
+			ETH->PTPTSCR |= 0x00000010 ; //Time stamp interrupt trigger enable
+			//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
+		}
   /* USER CODE END ETH_IRQn 1 */
 }
 
